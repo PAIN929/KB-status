@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>KBank Service Status</title>
+  <title>KB Service Status</title>
   <style>
     @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
     
@@ -238,7 +238,7 @@
   <div class="container">
     <div class="status-header">
       <div class="status-icon">🔴</div>
-      <h1>KBank Service Status</h1>
+      <h1>KB Service Status</h1>
       <div class="status-text">Checking connection status...</div>
       <div class="status-timestamp" id="lastUpdate"></div>
     </div>
@@ -254,7 +254,7 @@
     
     <div class="note" id="instructions">
       <strong>How it works:</strong>
-      <p>Your friend is using a secure tunnel to share KBank. This page shows if it's available.</p>
+      <p>Your friend is using a secure tunnel to share KB. This page shows if it's available.</p>
     </div>
   </div>
 
@@ -325,7 +325,7 @@
       // Update text
       const statusText = document.querySelector('.status-text');
       if (status.status === 'online') {
-        statusText.textContent = 'KBank is available!';
+        statusText.textContent = 'KB is available!';
       } else if (status.status === 'starting') {
         statusText.textContent = 'Setting up secure tunnel...';
       } else if (status.status === 'error') {
@@ -352,7 +352,7 @@
           
         content = `
           <p><strong>Service is available!</strong></p>
-          <p>Click the link below to access KBank through the secure tunnel.</p>
+          <p>Click the link below to access KB through the secure tunnel.</p>
           
           <div class="tunnel-url" id="urlContainer">
             <button class="copy-btn" onclick="copyUrl()">Copy</button>
@@ -369,7 +369,7 @@
           ` : ''}
           
           <a href="${status.url || '#'}" class="refresh-btn" id="accessBtn">
-            Access KBank Now →
+            Access KB Now →
           </a>
           
           <div class="mobile-warning">
@@ -380,7 +380,7 @@
         content = `
           <p><strong>${status.status === 'starting' ? 'Setting up...' : 
                          status.status === 'error' ? 'Connection issue' : 'Not sharing'}</strong></p>
-          <p>${status.message || 'Your friend needs to start sharing before you can access KBank.'}</p>
+          <p>${status.message || 'Your friend needs to start sharing before you can access KB.'}</p>
         `;
       }
       
