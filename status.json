@@ -1,6 +1,6 @@
 {
-  "status": "offline",
-  "url": "",
-  "timestamp": 1755763099,
-  "message": "Service not available"
+  "status": "online",
+  "url": "https://admin.localhost.run",
+  "timestamp": 1755763422,
+  "message": "Tunnel active - URL valid for 30 minutes"
 }
