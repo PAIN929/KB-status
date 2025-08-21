@@ -1,0 +1,426 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>KBank Service Status</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+    
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, 
+                   Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+    }
+    
+    :root {
+      --primary: #2563eb;
+      --primary-dark: #1d4ed8;
+      --secondary: #0f172a;
+      --success: #10b981;
+      --danger: #ef4444;
+      --warning: #f59e0b;
+      --info: #3b82f6;
+      --light: #f8fafc;
+      --dark: #1e293b;
+      --gray: #e2e8f0;
+      --border: #cbd5e1;
+    }
+    
+    body {
+      background: linear-gradient(135deg, #f0f4ff 0%, #e0e7ff 100%);
+      color: var(--dark);
+      min-height: 100vh;
+      padding: 20px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+    
+    .container {
+      background: white;
+      border-radius: 16px;
+      padding: 2.5rem;
+      width: 100%;
+      max-width: 520px;
+      box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 
+                  0 8px 10px -6px rgba(0, 0, 0, 0.1);
+      border: 1px solid var(--border);
+    }
+    
+    .status-header {
+      text-align: center;
+      margin-bottom: 2rem;
+    }
+    
+    .status-icon {
+      font-size: 3.5rem;
+      margin-bottom: 1rem;
+    }
+    
+    .status-online .status-icon { color: var(--success); }
+    .status-offline .status-icon { color: var(--danger); }
+    .status-starting .status-icon { color: var(--warning); }
+    .status-error .status-icon { color: var(--danger); }
+    
+    h1 {
+      font-size: 2.2rem;
+      margin-bottom: 0.5rem;
+      color: var(--secondary);
+      font-weight: 700;
+    }
+    
+    .status-text {
+      font-size: 1.2rem;
+      margin-bottom: 1.5rem;
+      color: var(--dark);
+    }
+    
+    .status-online .status-text { color: #047857; }
+    .status-offline .status-text { color: #b91c1c; }
+    .status-starting .status-text { color: #c27a00; }
+    .status-error .status-text { color: #b91c1c; }
+    
+    .info-box {
+      background: #f8fafc;
+      border-radius: 12px;
+      padding: 1.5rem;
+      margin: 1.8rem 0;
+      border: 1px solid var(--border);
+    }
+    
+    .info-box p {
+      color: #475569;
+      line-height: 1.6;
+      margin-bottom: 0.8rem;
+    }
+    
+    .tunnel-url {
+      background: #f1f5f9;
+      border-radius: 8px;
+      padding: 1rem;
+      margin: 1.5rem 0;
+      font-family: monospace;
+      word-break: break-all;
+      border: 1px dashed var(--border);
+      position: relative;
+      min-height: 50px;
+      display: flex;
+      align-items: center;
+    }
+    
+    .copy-btn {
+      position: absolute;
+      right: 10px;
+      top: 10px;
+      background: var(--primary);
+      color: white;
+      border: none;
+      border-radius: 5px;
+      padding: 3px 8px;
+      font-size: 0.8rem;
+      cursor: pointer;
+    }
+    
+    .qr-container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      margin: 1.5rem 0;
+    }
+    
+    .qr-code {
+      width: 180px;
+      height: 180px;
+      background: white;
+      border-radius: 10px;
+      padding: 8px;
+      border: 1px solid var(--border);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      overflow: hidden;
+    }
+    
+    .qr-code img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+    }
+    
+    .refresh-btn {
+      background: linear-gradient(to right, var(--primary), var(--primary-dark));
+      color: white;
+      border: none;
+      padding: 0.9rem;
+      border-radius: 10px;
+      cursor: pointer;
+      font-size: 1.05rem;
+      width: 100%;
+      font-weight: 600;
+      transition: all 0.3s;
+      box-shadow: 0 4px 6px rgba(37, 99, 235, 0.25);
+      margin-top: 1rem;
+    }
+    
+    .refresh-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 12px rgba(37, 99, 235, 0.3);
+    }
+    
+    .note {
+      background: rgba(245, 159, 11, 0.05);
+      border-radius: 12px;
+      padding: 1.1rem;
+      margin-top: 1.8rem;
+      color: #92400e;
+      font-size: 0.9rem;
+      border-left: 3px solid var(--warning);
+    }
+    
+    .status-timestamp {
+      font-size: 0.85rem;
+      color: #64748b;
+      margin-top: 0.5rem;
+      text-align: center;
+    }
+    
+    .mobile-warning {
+      background: rgba(239, 68, 68, 0.05);
+      border-radius: 8px;
+      padding: 0.8rem;
+      margin-top: 1rem;
+      border-left: 3px solid var(--danger);
+      font-size: 0.85rem;
+      color: #7f1d1d;
+    }
+    
+    .loading {
+      text-align: center;
+      padding: 1rem;
+    }
+    
+    .spinner {
+      border: 4px solid rgba(37, 99, 235, 0.2);
+      border-radius: 50%;
+      border-top: 4px solid var(--primary);
+      width: 30px;
+      height: 30px;
+      animation: spin 1s linear infinite;
+      margin: 0 auto 1rem;
+    }
+    
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+    
+    @media (max-width: 480px) {
+      .container {
+        padding: 1.8rem;
+        border-radius: 12px;
+      }
+      
+      h1 {
+        font-size: 1.85rem;
+      }
+      
+      .tunnel-url {
+        font-size: 0.85rem;
+        padding: 0.8rem;
+      }
+    }
+  </style>
+</head>
+<body class="status-offline">
+  <div class="container">
+    <div class="status-header">
+      <div class="status-icon">🔴</div>
+      <h1>KBank Service Status</h1>
+      <div class="status-text">Checking connection status...</div>
+      <div class="status-timestamp" id="lastUpdate"></div>
+    </div>
+    
+    <div class="loading" id="loading">
+      <div class="spinner"></div>
+      <p>Connecting to status service...</p>
+    </div>
+    
+    <div class="info-box" id="statusInfo" style="display: none;">
+      <!-- Status content will be injected here -->
+    </div>
+    
+    <div class="note" id="instructions">
+      <strong>How it works:</strong>
+      <p>Your friend is using a secure tunnel to share KBank. This page shows if it's available.</p>
+    </div>
+  </div>
+
+  <script>
+    // Current status tracking
+    let lastStatus = 'offline';
+    let consecutiveFailures = 0;
+    const MAX_FAILURES = 3;
+    
+    // Initialize
+    function init() {
+      checkStatus();
+    }
+    
+    // Check status
+    function checkStatus() {
+      document.getElementById('loading').style.display = 'block';
+      document.getElementById('statusInfo').style.display = 'none';
+      document.getElementById('instructions').style.display = 'none';
+      
+      // Fetch status from GitHub
+      fetch('https://PAIN929.github.io/KB-status/status.json?ts=' + Date.now())
+        .then(response => {
+          if (!response.ok) throw new Error('Network response was not ok');
+          return response.json();
+        })
+        .then(data => {
+          consecutiveFailures = 0;
+          updateStatus(data);
+        })
+        .catch(error => {
+          consecutiveFailures++;
+          console.log(`Status check failed (${consecutiveFailures}/${MAX_FAILURES}):`, error);
+          
+          if (consecutiveFailures >= MAX_FAILURES) {
+            updateStatus({
+              status: 'error',
+              message: 'Unable to connect to status service',
+              error: error.message
+            });
+          } else {
+            // Keep trying
+            setTimeout(checkStatus, 5000);
+          }
+        });
+    }
+    
+    // Update UI with status
+    function updateStatus(status) {
+      document.getElementById('loading').style.display = 'none';
+      document.getElementById('statusInfo').style.display = 'block';
+      
+      // Update status class
+      document.body.className = `status-${status.status}`;
+      
+      // Update icon
+      const statusIcon = document.querySelector('.status-icon');
+      if (status.status === 'online') {
+        statusIcon.innerHTML = '🟢';
+      } else if (status.status === 'starting') {
+        statusIcon.innerHTML = '🔄';
+      } else if (status.status === 'error') {
+        statusIcon.innerHTML = '❌';
+      } else {
+        statusIcon.innerHTML = '🔴';
+      }
+      
+      // Update text
+      const statusText = document.querySelector('.status-text');
+      if (status.status === 'online') {
+        statusText.textContent = 'KBank is available!';
+      } else if (status.status === 'starting') {
+        statusText.textContent = 'Setting up secure tunnel...';
+      } else if (status.status === 'error') {
+        statusText.textContent = 'Connection issue detected';
+      } else {
+        statusText.textContent = 'Not currently sharing';
+      }
+      
+      // Update timestamp
+      const lastUpdate = document.getElementById('lastUpdate');
+      if (status.timestamp) {
+        const date = new Date(status.timestamp * 1000);
+        lastUpdate.textContent = `Last checked: ${date.toLocaleTimeString()}`;
+      } else {
+        lastUpdate.textContent = '';
+      }
+      
+      // Generate content based on status
+      let content = '';
+      
+      if (status.status === 'online') {
+        const qrCodeUrl = status.url ? 
+          `https://api.qrserver.com/v1/create-qr-code/?size=300x300&data=${encodeURIComponent(status.url)}` : '';
+          
+        content = `
+          <p><strong>Service is available!</strong></p>
+          <p>Click the link below to access KBank through the secure tunnel.</p>
+          
+          <div class="tunnel-url" id="urlContainer">
+            <button class="copy-btn" onclick="copyUrl()">Copy</button>
+            ${status.url || 'Loading...'}
+          </div>
+          
+          ${qrCodeUrl ? `
+          <div class="qr-container">
+            <div class="qr-code">
+              <img src="${qrCodeUrl}" alt="QR Code for tunnel URL">
+            </div>
+            <p style="margin-top: 0.5rem; font-size: 0.9rem;">Scan to open on mobile</p>
+          </div>
+          ` : ''}
+          
+          <a href="${status.url || '#'}" class="refresh-btn" id="accessBtn">
+            Access KBank Now →
+          </a>
+          
+          <div class="mobile-warning">
+            <strong>Mobile users:</strong> If the link stops working, refresh this page - 
+            the URL updates automatically when network changes
+          </div>
+        `;
+      } else {
+        content = `
+          <p><strong>${status.status === 'starting' ? 'Setting up...' : 
+                         status.status === 'error' ? 'Connection issue' : 'Not sharing'}</strong></p>
+          <p>${status.message || 'Your friend needs to start sharing before you can access KBank.'}</p>
+        `;
+      }
+      
+      // Update status info
+      document.getElementById('statusInfo').innerHTML = content;
+      
+      // Update access button if URL is available
+      if (status.status === 'online' && status.url) {
+        document.getElementById('accessBtn').href = status.url;
+      }
+      
+      // Update last status
+      lastStatus = status.status;
+      
+      // Set up next check
+      const delay = status.status === 'online' ? 30000 : 15000;
+      setTimeout(checkStatus, delay);
+    }
+    
+    // Copy URL to clipboard
+    function copyUrl() {
+      const urlContainer = document.getElementById('urlContainer');
+      const url = urlContainer.innerText.replace('Copy', '').trim();
+      
+      navigator.clipboard.writeText(url).then(() => {
+        const btn = document.querySelector('.copy-btn');
+        const originalText = btn.innerText;
+        btn.innerText = '✓ Copied!';
+        setTimeout(() => {
+          btn.innerText = originalText;
+        }, 2000);
+      }).catch(err => {
+        console.error('Failed to copy: ', err);
+        alert('Failed to copy URL. Please select and copy manually.');
+      });
+    }
+    
+    // Initialize when page loads
+    window.addEventListener('load', init);
+  </script>
+</body>
+</html>
