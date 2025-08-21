@@ -1,6 +1,6 @@
 {
-  "status": "error",
-  "url": "",
-  "timestamp": 1755782541,
-  "message": "Failed to create tunnel - check internet connection"
+  "status": "online",
+  "url": "https://a334ecfb5cfd31.lhr.life",
+  "timestamp": 1755783661,
+  "message": "Tunnel active - URL updated in real-time"
 }
