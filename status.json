@@ -1,6 +1,6 @@
 {
-  "status": "online",
-  "url": "https://0710da60ab91ed.lhr.life",
-  "timestamp": 1755767095,
-  "message": "Tunnel active - URL updates automatically"
+  "status": "error",
+  "url": "",
+  "timestamp": 1755782541,
+  "message": "Failed to create tunnel - check internet connection"
 }
