@@ -1,9 +1,9 @@
 {
   "status": "online",
-  "url": "DEBUG: Analyzing log content for tunnel URL: ac9c04bbcbfdca.lhr.life tunneled with tls termination, https://ac9c04bbcbfdca.lhr.life
-DEBUG: Found potential tunnel domain: ac9c04bbcbfdca.lhr.life
-DEBUG: Confirmed tunnel URL using strategy 1: https://ac9c04bbcbfdca.lhr.life
-https://ac9c04bbcbfdca.lhr.life",
-  "timestamp": 1755887595,
+  "url": "DEBUG: Analyzing log content for tunnel URL: e83d928db65dbe.lhr.life tunneled with tls termination, https://e83d928db65dbe.lhr.life
+DEBUG: Found potential tunnel domain: e83d928db65dbe.lhr.life
+DEBUG: Confirmed tunnel URL using strategy 1: https://e83d928db65dbe.lhr.life
+https://e83d928db65dbe.lhr.life",
+  "timestamp": 1755887635,
   "message": "Tunnel active - URL updated immediately (free tier needs time to activate)"
 }
