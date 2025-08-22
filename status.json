@@ -1,6 +1,9 @@
 {
   "status": "online",
-  "url": "https://c7d31b893219f1.lhr.life",
-  "timestamp": 1755882666,
+  "url": "DEBUG: Analyzing log content for tunnel URL: c205a052ddb175.lhr.life tunneled with tls termination, https://c205a052ddb175.lhr.life
+DEBUG: Found potential tunnel domain: c205a052ddb175.lhr.life
+DEBUG: Confirmed tunnel URL using strategy 1: https://c205a052ddb175.lhr.life
+https://c205a052ddb175.lhr.life",
+  "timestamp": 1755883689,
   "message": "Tunnel active - URL updated immediately (free tier needs time to activate)"
 }
