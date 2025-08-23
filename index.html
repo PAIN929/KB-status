@@ -15,28 +15,33 @@
     }
     
     :root {
-      --primary: #2563eb;
-      --primary-dark: #1d4ed8;
+      --primary: #4f46e5;
+      --primary-dark: #4338ca;
       --secondary: #0f172a;
-      --success: #10b981;
-      --danger: #ef4444;
-      --warning: #f59e0b;
+      --success: #059669;
+      --danger: #dc2626;
+      --warning: #d97706;
       --info: #3b82f6;
       --light: #f8fafc;
       --dark: #1e293b;
       --gray: #e2e8f0;
       --border: #cbd5e1;
-      --card-bg: rgba(255, 255, 255, 0.95);
+      --card-bg: rgba(255, 255, 255, 0.15);
+      --card-border: rgba(255, 255, 255, 0.1);
+      --glow-success: 0 0 20px rgba(5, 150, 105, 0.3);
+      --glow-danger: 0 0 20px rgba(220, 38, 38, 0.3);
+      --glow-warning: 0 0 20px rgba(217, 119, 6, 0.3);
     }
     
     body {
-      background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
-      color: var(--dark);
+      background: linear-gradient(135deg, #0a0f24 0%, #0f172a 50%, #1e293b 100%);
+      color: var(--light);
       min-height: 100vh;
       padding: 20px;
-      overflow-y: auto; /* FIXED: Allows scrolling */
+      overflow-y: auto;
       position: relative;
       margin: 0;
+      background-attachment: fixed;
     }
     
     /* Enhanced starfield background */
@@ -51,234 +56,503 @@
     }
     
     .container {
-      
-      border-radius: 16px;
+      background: var(--card-bg);
+      border-radius: 20px;
       padding: 2.5rem;
       width: 100%;
-      max-width: 520px;
+      max-width: 540px;
       box-shadow: 
-        0 10px 25px -5px rgba(0, 0, 0, 0.2), 
-        0 8px 10px -6px rgba(0, 0, 0, 0.15),
-        0 0 0 1px rgba(255, 255, 255, 0.1);
-      border: 1px solid rgba(255, 255, 255, 0.2);
+        0 10px 30px -10px rgba(0, 0, 0, 0.4),
+        0 8px 15px -6px rgba(0, 0, 0, 0.25),
+        0 0 0 1px var(--card-border),
+        var(--status-glow);
+      border: 1px solid var(--card-border);
       position: relative;
       z-index: 10;
-      backdrop-filter: blur(4px);
+      backdrop-filter: blur(12px);
       margin: 0 auto;
+      transition: all 0.4s ease;
+      overflow: hidden;
+    }
+    
+    /* Status glow effects */
+    .container::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      border-radius: 20px;
+      pointer-events: none;
+      box-shadow: inset 0 0 0 1px var(--card-border);
+      opacity: 0.5;
+      transition: all 0.4s ease;
+    }
+    
+    .status-online .container::before {
+      box-shadow: inset 0 0 0 1px rgba(5, 150, 105, 0.3);
+    }
+    
+    .status-offline .container::before {
+      box-shadow: inset 0 0 0 1px rgba(220, 38, 38, 0.3);
+    }
+    
+    .status-starting .container::before {
+      box-shadow: inset 0 0 0 1px rgba(217, 119, 6, 0.3);
+    }
+    
+    .status-error .container::before {
+      box-shadow: inset 0 0 0 1px rgba(220, 38, 38, 0.3);
     }
     
     .status-header {
       text-align: center;
       margin-bottom: 2rem;
+      position: relative;
     }
     
     .status-icon {
-      font-size: 3.5rem;
-      margin-bottom: 1rem;
-      filter: drop-shadow(0 0 8px rgba(0, 0, 0, 0.2));
+      font-size: 4.2rem;
+      margin-bottom: 1.2rem;
+      filter: drop-shadow(0 0 12px rgba(0, 0, 0, 0.3));
       transition: all 0.3s ease;
+      position: relative;
+      display: inline-block;
     }
     
-    .status-online .status-icon { 
-      color: var(--success); 
+    .status-icon::after {
+      content: '';
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 120%;
+      height: 120%;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(255,255,255,0.2) 0%, transparent 70%);
+      opacity: 0;
+      transition: opacity 0.3s ease;
+    }
+    
+    .status-online .status-icon {
+      color: var(--success);
       animation: pulse-success 2s infinite;
     }
     
-    .status-offline .status-icon { 
-      color: var(--danger); 
+    .status-online .status-icon::after {
+      opacity: 0.3;
+    }
+    
+    .status-offline .status-icon {
+      color: var(--danger);
       animation: pulse-danger 2s infinite;
     }
     
-    .status-starting .status-icon { 
-      color: var(--warning); 
+    .status-offline .status-icon::after {
+      opacity: 0.3;
+    }
+    
+    .status-starting .status-icon {
+      color: var(--warning);
       animation: pulse-warning 2s infinite;
     }
     
-    .status-error .status-icon { 
-      color: var(--danger); 
+    .status-starting .status-icon::after {
+      opacity: 0.3;
+    }
+    
+    .status-error .status-icon {
+      color: var(--danger);
       animation: pulse-danger 2s infinite;
     }
     
+    .status-error .status-icon::after {
+      opacity: 0.3;
+    }
+    
     @keyframes pulse-success {
-      0% { transform: scale(1); filter: drop-shadow(0 0 5px var(--success)); }
-      50% { transform: scale(1.1); filter: drop-shadow(0 0 15px var(--success)); }
-      100% { transform: scale(1); filter: drop-shadow(0 0 5px var(--success)); }
+      0% { transform: scale(1); filter: drop-shadow(0 0 8px rgba(5, 150, 105, 0.4)); }
+      50% { transform: scale(1.12); filter: drop-shadow(0 0 20px rgba(5, 150, 105, 0.6)); }
+      100% { transform: scale(1); filter: drop-shadow(0 0 8px rgba(5, 150, 105, 0.4)); }
     }
     
     @keyframes pulse-danger {
-      0% { transform: scale(1); filter: drop-shadow(0 0 5px var(--danger)); }
-      50% { transform: scale(1.1); filter: drop-shadow(0 0 15px var(--danger)); }
-      100% { transform: scale(1); filter: drop-shadow(0 0 5px var(--danger)); }
+      0% { transform: scale(1); filter: drop-shadow(0 0 8px rgba(220, 38, 38, 0.4)); }
+      50% { transform: scale(1.12); filter: drop-shadow(0 0 20px rgba(220, 38, 38, 0.6)); }
+      100% { transform: scale(1); filter: drop-shadow(0 0 8px rgba(220, 38, 38, 0.4)); }
     }
     
     @keyframes pulse-warning {
-      0% { transform: scale(1); filter: drop-shadow(0 0 5px var(--warning)); }
-      50% { transform: scale(1.1); filter: drop-shadow(0 0 15px var(--warning)); }
-      100% { transform: scale(1); filter: drop-shadow(0 0 5px var(--warning)); }
+      0% { transform: scale(1); filter: drop-shadow(0 0 8px rgba(217, 119, 6, 0.4)); }
+      50% { transform: scale(1.12); filter: drop-shadow(0 0 20px rgba(217, 119, 6, 0.6)); }
+      100% { transform: scale(1); filter: drop-shadow(0 0 8px rgba(217, 119, 6, 0.4)); }
     }
     
     h1 {
-      font-size: 2.2rem;
+      font-size: 2.4rem;
       margin-bottom: 0.5rem;
       color: white;
-      font-weight: 700;
+      font-weight: 800;
       letter-spacing: -0.5px;
+      text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+      background: linear-gradient(to right, #e0e7ff, #f0f9ff);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      position: relative;
+      display: inline-block;
+    }
+    
+    h1::after {
+      content: '';
+      position: absolute;
+      bottom: -8px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 60px;
+      height: 3px;
+      background: linear-gradient(to right, transparent, var(--primary), transparent);
+      border-radius: 3px;
     }
     
     .status-text {
-      font-size: 1.2rem;
-      margin-bottom: 1.5rem;
-      color: var(--dark);
-      font-weight: 500;
+      font-size: 1.3rem;
+      margin-bottom: 1.2rem;
+      color: white;
+      font-weight: 600;
+      text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+      position: relative;
+      padding: 0 10px;
     }
     
-    .status-online .status-text { color: #047857; }
-    .status-offline .status-text { color: #b91c1c; }
-    .status-starting .status-text { color: #c27a00; }
-    .status-error .status-text { color: #b91c1c; }
+    .status-text::before,
+    .status-text::after {
+      content: '';
+      position: absolute;
+      top: 50%;
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      transform: translateY(-50%);
+      opacity: 0.7;
+    }
+    
+    .status-text::before {
+      left: 0;
+    }
+    
+    .status-text::after {
+      right: 0;
+    }
+    
+    .status-online .status-text {
+      color: #6ee7b7;
+    }
+    
+    .status-online .status-text::before,
+    .status-online .status-text::after {
+      background: #6ee7b7;
+    }
+    
+    .status-offline .status-text {
+      color: #fca5a5;
+    }
+    
+    .status-offline .status-text::before,
+    .status-offline .status-text::after {
+      background: #fca5a5;
+    }
+    
+    .status-starting .status-text {
+      color: #fdba74;
+    }
+    
+    .status-starting .status-text::before,
+    .status-starting .status-text::after {
+      background: #fdba74;
+    }
+    
+    .status-error .status-text {
+      color: #fca5a5;
+    }
+    
+    .status-error .status-text::before,
+    .status-error .status-text::after {
+      background: #fca5a5;
+    }
     
     .info-box {
-      background: rgba(241, 245, 249, 0.7);
-      border-radius: 12px;
-      padding: 1.5rem;
+      background: rgba(30, 41, 59, 0.6);
+      border-radius: 16px;
+      padding: 1.6rem;
       margin: 1.8rem 0;
-      border: 1px solid var(--border);
-      box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.05);
+      border: 1px solid rgba(148, 163, 184, 0.2);
+      box-shadow: 
+        0 4px 6px -1px rgba(0, 0, 0, 0.1),
+        0 2px 4px -1px rgba(0, 0, 0, 0.06),
+        0 0 0 1px rgba(255, 255, 255, 0.05);
+      backdrop-filter: blur(4px);
+      transition: all 0.3s ease;
+    }
+    
+    .info-box:hover {
+      transform: translateY(-2px);
+      box-shadow: 
+        0 10px 15px -3px rgba(0, 0, 0, 0.1),
+        0 4px 6px -2px rgba(0, 0, 0, 0.05),
+        0 0 0 1px rgba(255, 255, 255, 0.08);
     }
     
     .info-box p {
-      color: #475569;
-      line-height: 1.6;
-      margin-bottom: 0.8rem;
+      color: #cbd5e1;
+      line-height: 1.65;
+      margin-bottom: 0.9rem;
+      font-size: 1.02rem;
+    }
+    
+    .info-box strong {
+      color: white;
+      font-weight: 600;
     }
     
     .tunnel-url {
-      background: #f1f5f9;
-      border-radius: 8px;
-      padding: 1rem;
+      background: rgba(30, 41, 59, 0.7);
+      border-radius: 12px;
+      padding: 1.1rem 1.1rem 1.1rem 1.5rem;
       margin: 1.5rem 0;
       font-family: monospace;
       word-break: break-all;
-      border: 1px dashed var(--border);
+      border: 1px solid rgba(148, 163, 184, 0.2);
       position: relative;
-      min-height: 50px;
+      min-height: 55px;
       display: flex;
       align-items: center;
-      box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.05);
+      box-shadow: 
+        0 4px 6px -1px rgba(0, 0, 0, 0.1),
+        inset 0 1px 2px rgba(0, 0, 0, 0.05);
+      transition: all 0.3s ease;
+      overflow: hidden;
+    }
+    
+    .tunnel-url::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      height: 100%;
+      width: 4px;
+      background: var(--primary);
+    }
+    
+    .tunnel-url:hover {
+      border-color: var(--primary);
+      box-shadow: 
+        0 10px 15px -3px rgba(79, 70, 229, 0.2),
+        0 4px 6px -2px rgba(0, 0, 0, 0.05);
     }
     
     .copy-btn {
       position: absolute;
-      right: 10px;
-      top: 10px;
+      right: 12px;
+      top: 50%;
+      transform: translateY(-50%);
       background: var(--primary);
       color: white;
       border: none;
-      border-radius: 5px;
-      padding: 3px 8px;
-      font-size: 0.8rem;
+      border-radius: 8px;
+      padding: 5px 12px;
+      font-size: 0.85rem;
       cursor: pointer;
-      transition: all 0.2s ease;
+      transition: all 0.25s ease;
+      z-index: 10;
+      box-shadow: 0 2px 5px rgba(79, 70, 229, 0.2);
+      backdrop-filter: blur(4px);
     }
     
     .copy-btn:hover {
       background: var(--primary-dark);
-      transform: translateY(-1px);
-      box-shadow: 0 2px 5px rgba(37, 99, 235, 0.3);
+      transform: translateY(-50%) scale(1.05);
+      box-shadow: 0 4px 8px rgba(79, 70, 229, 0.3);
+    }
+    
+    .copy-btn:active {
+      transform: translateY(-50%) scale(0.98);
     }
     
     .qr-container {
       display: flex;
       flex-direction: column;
       align-items: center;
-      margin: 1.5rem 0;
+      margin: 1.6rem 0;
+      padding: 0.8rem;
+      background: rgba(30, 41, 59, 0.4);
+      border-radius: 16px;
+      transition: all 0.3s ease;
+    }
+    
+    .qr-container:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
     }
     
     .qr-code {
-      width: 180px;
-      height: 180px;
+      width: 190px;
+      height: 190px;
       background: white;
-      border-radius: 10px;
-      padding: 8px;
-      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 10px;
+      border: 1px solid rgba(148, 163, 184, 0.3);
       display: flex;
       justify-content: center;
       align-items: center;
       overflow: hidden;
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+      position: relative;
+      transition: all 0.3s ease;
+    }
+    
+    .qr-code::before {
+      content: 'KB';
+      position: absolute;
+      top: 8px;
+      left: 8px;
+      font-weight: bold;
+      font-size: 0.75rem;
+      color: #3b82f6;
+      text-shadow: 0 1px 2px rgba(0,0,0,0.1);
+    }
+    
+    .qr-code::after {
+      content: '';
+      position: absolute;
+      bottom: 8px;
+      right: 8px;
+      width: 20px;
+      height: 20px;
+      background: linear-gradient(135deg, #3b82f6, #8b5cf6);
+      border-radius: 4px;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.2);
     }
     
     .qr-code img {
       width: 100%;
       height: 100%;
       object-fit: contain;
+      border-radius: 4px;
+      transition: all 0.3s ease;
+    }
+    
+    .qr-code:hover img {
+      transform: scale(1.03);
     }
     
     .refresh-btn {
       background: linear-gradient(to right, var(--primary), var(--primary-dark));
       color: white;
       border: none;
-      padding: 0.9rem;
-      border-radius: 10px;
+      padding: 0.95rem;
+      border-radius: 12px;
       cursor: pointer;
-      font-size: 1.05rem;
+      font-size: 1.1rem;
       width: 100%;
       font-weight: 600;
       transition: all 0.3s;
-      box-shadow: 0 4px 6px rgba(37, 99, 235, 0.25);
+      box-shadow: 0 6px 15px rgba(79, 70, 229, 0.3);
       margin-top: 1rem;
+      position: relative;
+      overflow: hidden;
+      z-index: 1;
+    }
+    
+    .refresh-btn::after {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+      transition: 0.6s;
+      z-index: -1;
     }
     
     .refresh-btn:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 6px 12px rgba(37, 99, 235, 0.3);
+      transform: translateY(-3px);
+      box-shadow: 0 10px 20px rgba(79, 70, 229, 0.4);
+    }
+    
+    .refresh-btn:hover::after {
+      left: 100%;
+    }
+    
+    .refresh-btn:active {
+      transform: translateY(-1px);
     }
     
     .note {
-      background: rgba(245, 159, 11, 0.05);
-      border-radius: 12px;
-      padding: 1.1rem;
+      background: rgba(180, 83, 9, 0.15);
+      border-radius: 14px;
+      padding: 1.2rem;
       margin-top: 1.8rem;
-      color: #92400e;
-      font-size: 0.9rem;
+      color: #fdba74;
+      font-size: 0.95rem;
       border-left: 3px solid var(--warning);
+      transition: all 0.3s ease;
+    }
+    
+    .note:hover {
+      background: rgba(180, 83, 9, 0.2);
+      transform: translateX(3px);
     }
     
     .status-timestamp {
-      font-size: 0.85rem;
-      color: #64748b;
-      margin-top: 0.5rem;
+      font-size: 0.88rem;
+      color: #94a3b8;
+      margin-top: 0.6rem;
       text-align: center;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 8px;
+    }
+    
+    .status-timestamp::before {
+      content: '●';
+      font-size: 0.6rem;
+      color: #38bdf8;
     }
     
     .stale-warning {
-      color: var(--danger) !important;
+      color: #fca5a5 !important;
       font-weight: bold;
     }
     
     .mobile-warning {
-      background: rgba(239, 68, 68, 0.05);
-      border-radius: 8px;
-      padding: 0.8rem;
-      margin-top: 1rem;
+      background: rgba(239, 68, 68, 0.1);
+      border-radius: 10px;
+      padding: 0.9rem;
+      margin-top: 1.1rem;
       border-left: 3px solid var(--danger);
-      font-size: 0.85rem;
-      color: #7f1d1d;
+      font-size: 0.88rem;
+      color: #fca5a5;
+      transition: all 0.3s ease;
     }
     
     .loading {
       text-align: center;
-      padding: 1rem;
+      padding: 1.2rem;
+      margin: 1rem 0;
     }
     
     .spinner {
-      border: 4px solid rgba(37, 99, 235, 0.2);
+      border: 4px solid rgba(79, 70, 229, 0.2);
       border-radius: 50%;
       border-top: 4px solid var(--primary);
-      width: 30px;
-      height: 30px;
-      animation: spin 1s linear infinite;
-      margin: 0 auto 1rem;
+      width: 34px;
+      height: 34px;
+      animation: spin 1.2s linear infinite;
+      margin: 0 auto 1.2rem;
+      box-shadow: 0 0 15px rgba(79, 70, 229, 0.1);
     }
     
     @keyframes spin {
@@ -289,17 +563,27 @@
     /* Audio controls */
     .audio-controls {
       position: fixed;
-      bottom: 20px;
-      right: 20px;
+      bottom: 24px;
+      right: 24px;
       z-index: 100;
-      background: rgba(15, 23, 42, 0.8);
-      border-radius: 30px;
-      padding: 8px 15px;
+      background: rgba(15, 23, 42, 0.85);
+      border-radius: 32px;
+      padding: 10px 16px;
       display: flex;
       align-items: center;
-      backdrop-filter: blur(5px);
-      border: 1px solid rgba(255, 255, 255, 0.1);
-      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+      backdrop-filter: blur(8px);
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      box-shadow: 
+        0 10px 25px -5px rgba(0, 0, 0, 0.3),
+        0 0 0 1px rgba(255, 255, 255, 0.05);
+      transition: all 0.3s ease;
+    }
+    
+    .audio-controls:hover {
+      transform: scale(1.03);
+      box-shadow: 
+        0 15px 30px -5px rgba(0, 0, 0, 0.35),
+        0 0 0 1px rgba(255, 255, 255, 0.08);
     }
     
     .audio-btn {
@@ -307,43 +591,163 @@
       border: none;
       color: #cbd5e1;
       cursor: pointer;
-      font-size: 1.2rem;
-      margin: 0 5px;
+      font-size: 1.3rem;
+      margin: 0 6px;
       transition: all 0.3s ease;
-      width: 30px;
-      height: 30px;
+      width: 34px;
+      height: 34px;
       display: flex;
       align-items: center;
       justify-content: center;
       border-radius: 50%;
+      position: relative;
+      overflow: hidden;
+    }
+    
+    .audio-btn::after {
+      content: '';
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      width: 100%;
+      height: 100%;
+      background: radial-gradient(circle, rgba(255,255,255,0.2) 0%, transparent 70%);
+      transform: translate(-50%, -50%);
+      opacity: 0;
+      transition: opacity 0.3s ease;
     }
     
     .audio-btn:hover {
       color: white;
-      background: rgba(255, 255, 255, 0.1);
+      background: rgba(255, 255, 255, 0.08);
+      transform: translateY(-2px) scale(1.05);
     }
     
+    .audio-btn:hover::after {
+      opacity: 1;
+    }
+    
+    .audio-btn:active {
+      transform: translateY(0) scale(0.95);
+    }
+    
+    .audio-indicator {
+      position: absolute;
+      top: 3px;
+      right: 3px;
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: #10b981;
+      box-shadow: 0 0 8px #10b981;
+      opacity: 0;
+      transition: opacity 0.3s ease;
+    }
+    
+    .audio-playing .audio-indicator {
+      opacity: 1;
+    }
+    
+    /* Connection status indicator */
+    .connection-status {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      background: #ef4444;
+      box-shadow: 0 0 10px rgba(239, 68, 68, 0.5);
+      z-index: 99;
+      transition: all 0.3s ease;
+    }
+    
+    .connection-status.online {
+      background: #10b981;
+      box-shadow: 0 0 10px rgba(16, 185, 129, 0.5);
+    }
+    
+    .connection-status.checking {
+      background: #f59e0b;
+      box-shadow: 0 0 10px rgba(245, 158, 11, 0.5);
+      animation: pulse 1.5s infinite;
+    }
+    
+    @keyframes pulse {
+      0% { opacity: 1; }
+      50% { opacity: 0.6; }
+      100% { opacity: 1; }
+    }
+    
+    /* New welcome animation */
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    
+    .container {
+      opacity: 0;
+      transform: translateY(20px);
+      animation: fadeIn 0.6s ease forwards;
+    }
+    
+    /* Mobile optimizations */
     @media (max-width: 480px) {
       .container {
-        padding: 1.8rem;
-        border-radius: 12px;
+        padding: 1.6rem 1.4rem;
+        border-radius: 16px;
+        margin: 0 10px;
       }
       
       h1 {
-        font-size: 1.85rem;
+        font-size: 1.95rem;
+      }
+      
+      .status-icon {
+        font-size: 3.6rem;
+      }
+      
+      .status-text {
+        font-size: 1.15rem;
       }
       
       .tunnel-url {
-        font-size: 0.85rem;
-        padding: 0.8rem;
+        font-size: 0.88rem;
+        padding: 0.9rem 0.9rem 0.9rem 1.2rem;
+      }
+      
+      .qr-code {
+        width: 170px;
+        height: 170px;
+      }
+      
+      .refresh-btn {
+        padding: 0.85rem;
+        font-size: 1.05rem;
+      }
+      
+      .audio-controls {
+        bottom: 16px;
+        right: 16px;
+        padding: 8px 12px;
+      }
+      
+      .audio-btn {
+        width: 30px;
+        height: 30px;
+        font-size: 1.15rem;
+        margin: 0 4px;
       }
     }
   </style>
 </head>
 <body class="status-offline">
+  <!-- Connection status indicator -->
+  <div class="connection-status" id="connectionStatus"></div>
+  
   <!-- Enhanced starfield background -->
   <canvas id="starfield"></canvas>
-  
+
   <div class="container">
     <div class="status-header">
       <div class="status-icon">🔴</div>
@@ -351,35 +755,36 @@
       <div class="status-text">Checking connection status...</div>
       <div class="status-timestamp" id="lastUpdate"></div>
     </div>
-    
+
     <div class="loading" id="loading">
       <div class="spinner"></div>
       <p>Connecting to status service...</p>
     </div>
-    
+
     <div class="info-box" id="statusInfo" style="display: none;">
       <!-- Status content will be injected here -->
     </div>
-    
+
     <div class="note" id="instructions">
       <strong>How it works:</strong>
       <p>Your friend is using a secure tunnel to share KB. This page shows if it's available.</p>
     </div>
   </div>
-  
+
   <!-- Audio controls -->
   <div class="audio-controls">
+    <div class="audio-indicator"></div>
     <button class="audio-btn" id="playPauseBtn">🔊</button>
     <button class="audio-btn" id="volumeUpBtn">🔊</button>
     <button class="audio-btn" id="volumeDownBtn">🔈</button>
   </div>
-  
+
   <!-- Background audio -->
   <audio id="backgroundAudio" loop>
     <source src="audio.mp3" type="audio/mpeg">
     Your browser does not support the audio element.
   </audio>
-  
+
   <script>
     // Current status tracking
     let lastStatus = 'offline';
@@ -388,6 +793,8 @@
     let audio = document.getElementById('backgroundAudio');
     let isPlaying = false;
     let volume = 0.5;
+    let audioInitialized = false;
+    let autoPlayAttempted = false;
     
     // 15 minutes in milliseconds for stale detection
     const STALE_THRESHOLD = 15 * 60 * 1000;
@@ -396,6 +803,7 @@
     function init() {
       createStarfield();
       setupAudioControls();
+      updateConnectionStatus('checking');
       checkStatus();
     }
     
@@ -448,7 +856,7 @@
       
       function animate() {
         // Clear with a dark blue background
-        ctx.fillStyle = '#0f172a';
+        ctx.fillStyle = '#0a0f24';
         ctx.fillRect(0, 0, canvas.width, canvas.height);
         
         // Draw and update regular stars
@@ -510,16 +918,39 @@
       const playPauseBtn = document.getElementById('playPauseBtn');
       const volumeUpBtn = document.getElementById('volumeUpBtn');
       const volumeDownBtn = document.getElementById('volumeDownBtn');
+      const audioIndicator = document.querySelector('.audio-indicator');
+      
+      // Auto-play audio after first user interaction (status check)
+      function attemptAutoPlay() {
+        if (autoPlayAttempted) return;
+        
+        audio.volume = 0.3; // Start with low volume
+        audio.play().then(() => {
+          isPlaying = true;
+          playPauseBtn.textContent = '🔊';
+          audioIndicator.style.opacity = '1';
+          autoPlayAttempted = true;
+          console.log('Audio auto-played successfully');
+        }).catch(e => {
+          console.log('Auto-play failed (browser policy):', e);
+          autoPlayAttempted = true;
+        });
+      }
+      
+      // Start audio after first status check completes
+      window.addEventListener('statusCheckComplete', attemptAutoPlay);
       
       playPauseBtn.addEventListener('click', () => {
         if (isPlaying) {
           audio.pause();
           playPauseBtn.textContent = '🔇';
+          audioIndicator.style.opacity = '0';
           isPlaying = false;
         } else {
           audio.volume = volume;
           audio.play().then(() => {
             playPauseBtn.textContent = '🔊';
+            audioIndicator.style.opacity = '1';
             isPlaying = true;
           }).catch(e => {
             console.log('Audio play failed:', e);
@@ -530,12 +961,42 @@
       volumeUpBtn.addEventListener('click', () => {
         volume = Math.min(1, volume + 0.1);
         audio.volume = volume;
+        
+        // Visual feedback for volume change
+        const btn = volumeUpBtn;
+        const originalText = btn.textContent;
+        btn.textContent = '✓';
+        setTimeout(() => {
+          btn.textContent = originalText;
+        }, 1000);
       });
       
       volumeDownBtn.addEventListener('click', () => {
         volume = Math.max(0, volume - 0.1);
         audio.volume = volume;
+        
+        // Visual feedback for volume change
+        const btn = volumeDownBtn;
+        const originalText = btn.textContent;
+        btn.textContent = '✓';
+        setTimeout(() => {
+          btn.textContent = originalText;
+        }, 1000);
       });
+    }
+    
+    // Update connection status indicator
+    function updateConnectionStatus(status) {
+      const statusIndicator = document.getElementById('connectionStatus');
+      
+      statusIndicator.className = 'connection-status';
+      
+      if (status === 'online') {
+        statusIndicator.classList.add('online');
+      } else if (status === 'checking') {
+        statusIndicator.classList.add('checking');
+      }
+      // Offline is the default state
     }
     
     // Check if timestamp is recent
@@ -549,6 +1010,7 @@
       document.getElementById('loading').style.display = 'block';
       document.getElementById('statusInfo').style.display = 'none';
       document.getElementById('instructions').style.display = 'none';
+      updateConnectionStatus('checking');
       
       // Fetch status from GitHub
       fetch('https://PAIN929.github.io/KB-status/status.json?ts=' + Date.now())
@@ -558,6 +1020,7 @@
         })
         .then(data => {
           consecutiveFailures = 0;
+          updateConnectionStatus('online');
           
           // Check if timestamp is recent (less than 15 minutes old)
           if (!isRecentTimestamp(data.timestamp)) {
@@ -566,11 +1029,16 @@
             data.message = 'No recent updates - service is offline';
           }
           
+          // Dispatch event to trigger auto-play
+          const event = new Event('statusCheckComplete');
+          window.dispatchEvent(event);
+          
           updateStatus(data);
         })
         .catch(error => {
           consecutiveFailures++;
           console.log(`Status check failed (${consecutiveFailures}/${MAX_FAILURES}):`, error);
+          updateConnectionStatus('offline');
           
           if (consecutiveFailures >= MAX_FAILURES) {
             updateStatus({
@@ -670,7 +1138,7 @@
                          status.status === 'error' ? 'Connection issue' : 'Not sharing'}</strong></p>
           <p>${status.message || 'Your friend needs to start sharing before you can access KB.'}</p>
           ${!isRecentTimestamp(status.timestamp) ? 
-            '<p style="margin-top: 1rem; color: #b91c1c;">The service may be offline. Please check back later.</p>' : ''}
+            '<p style="margin-top: 1rem; color: #fca5a5;">The service may be offline. Please check back later.</p>' : ''}
         `;
       }
       
@@ -709,7 +1177,10 @@
     }
     
     // Initialize when page loads
-    window.addEventListener('load', init);
+    window.addEventListener('load', () => {
+      // Add a small delay for better visual effect
+      setTimeout(init, 300);
+    });
   </script>
 </body>
 </html>
