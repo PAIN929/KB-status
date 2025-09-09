@@ -17,21 +17,21 @@
     html, body {
       height: 100%;
       overflow: auto;
+      background: #000;
     }
     
     :root {
-      --primary: #4f46e5;
-      --primary-dark: #4338ca;
-      --success: #059669;
+      --primary: #ffcc00;
+      --primary-dark: #ff9900;
+      --secondary: #ff6600;
+      --tertiary: #cc3300;
       --light: #f8fafc;
       --dark: #1e293b;
-      --card-bg: rgba(15, 23, 42, 0.7);
-      --card-border: rgba(255, 255, 255, 0.1);
       --touch-target-min: 48px;
     }
     
     body {
-      background: #0a0f24;
+      background: linear-gradient(135deg, #000000 0%, #0a0f24 100%);
       color: var(--light);
       min-height: 100vh;
       padding: 15px;
@@ -49,7 +49,7 @@
       left: 0;
       width: 100%;
       height: 100%;
-      z-index: -1;
+      z-index: -2;
       pointer-events: none;
     }
     
@@ -64,51 +64,155 @@
       z-index: 10;
     }
     
-    .password-section {
+    .solar-system {
+      position: relative;
       width: 100%;
-      max-width: 800px;
-      margin: 0 auto;
-      text-align: center;
+      max-width: 500px;
+      height: 500px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+    
+    /* Solar flare visualization */
+    .solar-flares {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+    }
+    
+    .flare {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      width: 4px;
+      height: 0;
+      background: linear-gradient(to top, rgba(255, 204, 0, 0.8), rgba(255, 102, 0, 0.5), transparent);
+      border-radius: 50% 50% 0 0;
+      transform-origin: bottom;
+      filter: blur(1px);
+      opacity: 0.6;
+    }
+    
+    .flare.active {
+      animation: pulse 0.3s ease-out;
+    }
+    
+    @keyframes pulse {
+      0% { opacity: 0.6; }
+      50% { opacity: 0.9; }
+      100% { opacity: 0.6; }
+    }
+    
+    /* Sun glow effect */
+    .sun-glow {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      border-radius: 50%;
+      background: radial-gradient(circle, 
+        rgba(255, 204, 0, 0.3) 0%, 
+        rgba(255, 153, 0, 0.15) 30%, 
+        rgba(255, 102, 0, 0.05) 60%, 
+        transparent 100%);
+      z-index: -1;
+      animation: glow-pulse 3s infinite alternate;
+    }
+    
+    @keyframes glow-pulse {
+      0% {
+        box-shadow: 0 0 30px 10px rgba(255, 204, 0, 0.3),
+                    0 0 60px 20px rgba(255, 153, 0, 0.2),
+                    0 0 90px 30px rgba(255, 102, 0, 0.1);
+      }
+      100% {
+        box-shadow: 0 0 40px 15px rgba(255, 204, 0, 0.4),
+                    0 0 80px 25px rgba(255, 153, 0, 0.3),
+                    0 0 110px 35px rgba(255, 102, 0, 0.15);
+      }
+    }
+    
+    .sun-core {
+      position: relative;
+      width: 220px;
+      height: 220px;
+      border-radius: 50%;
+      background: radial-gradient(circle, 
+        #ffcc00 0%, 
+        #ff9900 30%, 
+        #ff6600 60%, 
+        #cc3300 100%);
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      padding: 20px;
+      box-shadow: 
+        0 0 30px 10px rgba(255, 204, 0, 0.3),
+        0 0 60px 20px rgba(255, 153, 0, 0.2),
+        0 0 90px 30px rgba(255, 102, 0, 0.1);
+      animation: sun-bloom 4s infinite alternate;
+      overflow: hidden;
+    }
+    
+    @keyframes sun-bloom {
+      0% {
+        transform: scale(1);
+        box-shadow: 
+          0 0 30px 10px rgba(255, 204, 0, 0.3),
+          0 0 60px 20px rgba(255, 153, 0, 0.2),
+          0 0 90px 30px rgba(255, 102, 0, 0.1);
+      }
+      100% {
+        transform: scale(1.03);
+        box-shadow: 
+          0 0 40px 15px rgba(255, 204, 0, 0.4),
+          0 0 80px 25px rgba(255, 153, 0, 0.3),
+          0 0 110px 35px rgba(255, 102, 0, 0.15);
+      }
     }
     
     .password-container {
       position: relative;
-      margin: 30px 0;
+      width: 100%;
+      text-align: center;
+      z-index: 10;
     }
     
     .password {
       width: 100%;
-      padding: 20px 60px;
-      border-radius: 16px;
-      border: 1px solid rgba(148, 163, 184, 0.2);
-      background: var(--card-bg);
+      padding: 15px 10px;
+      border-radius: 12px;
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      background: rgba(0, 0, 0, 0.3);
       color: white;
       font-family: monospace;
-      font-size: 1.4rem;
+      font-size: 1.1rem;
       transition: all 0.3s;
-      box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.5);
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.4);
       word-break: break-all;
       min-height: var(--touch-target-min);
       letter-spacing: 1px;
       text-align: center;
       backdrop-filter: blur(4px);
+      border: none;
+      margin: 0 auto;
     }
     
     .password:focus {
       outline: none;
-      border-color: var(--primary);
-      box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.2);
     }
     
     .copy-btn {
       position: absolute;
-      right: 15px;
+      right: 10px;
       top: 50%;
       transform: translateY(-50%);
-      width: 44px;
-      height: 44px;
-      border-radius: 12px;
-      background: rgba(30, 41, 59, 0.8);
+      width: 36px;
+      height: 36px;
+      border-radius: 10px;
+      background: rgba(0, 0, 0, 0.5);
       border: none;
       color: white;
       cursor: pointer;
@@ -117,33 +221,31 @@
       justify-content: center;
       transition: all 0.3s;
       z-index: 20;
+      box-shadow: 0 0 10px rgba(255, 204, 0, 0.3);
     }
     
     .copy-btn:hover {
-      background: var(--primary);
-      transform: translateY(-50%) scale(1.08);
+      background: rgba(255, 204, 0, 0.3);
+      transform: translateY(-50%) scale(1.1);
     }
     
     .last-updated {
-      color: #94a3b8;
-      font-size: 0.95rem;
-      margin-top: 10px;
+      color: rgba(255, 255, 255, 0.7);
+      font-size: 0.85rem;
+      margin-top: 12px;
       text-align: center;
+      text-shadow: 0 0 5px rgba(255, 204, 0, 0.5);
     }
     
-    .audio-section {
+    .audio-controls {
+      position: absolute;
+      bottom: 40px;
       width: 100%;
-      max-width: 800px;
-      margin-top: auto;
-      padding-bottom: 25px;
-    }
-    
-    .audio-player {
-      width: 100%;
+      max-width: 400px;
       display: flex;
-      align-items: center;
+      justify-content: center;
       gap: 15px;
-      margin-bottom: 15px;
+      z-index: 20;
     }
     
     .volume-control {
@@ -151,12 +253,14 @@
       align-items: center;
       gap: 10px;
       flex: 1;
+      max-width: 250px;
     }
     
     .volume-icon {
-      font-size: 1.4rem;
+      font-size: 1.3rem;
       color: var(--primary);
       transition: all 0.3s;
+      text-shadow: 0 0 8px rgba(255, 204, 0, 0.7);
     }
     
     .volume-icon.muted {
@@ -168,33 +272,33 @@
       -webkit-appearance: none;
       appearance: none;
       width: 100%;
-      height: 4px;
-      border-radius: 2px;
-      background: rgba(148, 163, 184, 0.2);
+      height: 3px;
+      border-radius: 1.5px;
+      background: rgba(255, 204, 0, 0.3);
       outline: none;
     }
     
     .volume-slider::-webkit-slider-thumb {
       -webkit-appearance: none;
       appearance: none;
-      width: 20px;
-      height: 20px;
+      width: 16px;
+      height: 16px;
       border-radius: 50%;
       background: var(--primary);
       cursor: pointer;
-      box-shadow: 0 0 8px rgba(79, 70, 229, 0.5);
+      box-shadow: 0 0 8px rgba(255, 204, 0, 0.7);
       transition: all 0.2s;
       border: 2px solid white;
     }
     
     .volume-slider::-webkit-slider-thumb:hover {
-      transform: scale(1.15);
+      transform: scale(1.2);
       background: var(--primary-dark);
     }
     
     .play-pause-btn {
-      width: 60px;
-      height: 60px;
+      width: 50px;
+      height: 50px;
       border-radius: 50%;
       background: var(--primary);
       border: none;
@@ -204,14 +308,14 @@
       align-items: center;
       justify-content: center;
       transition: all 0.3s;
-      box-shadow: 0 6px 15px rgba(79, 70, 229, 0.3);
+      box-shadow: 0 4px 10px rgba(255, 204, 0, 0.4);
       touch-action: manipulation;
-      flex-shrink: 0;
+      z-index: 30;
     }
     
     .play-pause-btn:hover {
-      transform: scale(1.08);
-      box-shadow: 0 8px 20px rgba(79, 70, 229, 0.4);
+      transform: scale(1.1);
+      box-shadow: 0 6px 15px rgba(255, 204, 0, 0.5);
     }
     
     .play-pause-btn:active {
@@ -219,46 +323,9 @@
     }
     
     .play-pause-btn svg {
-      width: 28px;
-      height: 28px;
-    }
-    
-    /* Audio visualization */
-    .audio-visualization {
-      width: 100%;
-      height: 100px;
-      display: flex;
-      align-items: flex-end;
-      gap: 2px;
-      padding: 10px 0;
-      margin-top: 5px;
-    }
-    
-    .audio-bar {
-      flex: 1;
-      background: linear-gradient(to top, var(--primary), var(--primary-dark));
-      border-radius: 2px 2px 0 0;
-      transition: height 0.05s ease;
-      max-height: 100px;
-      min-height: 2px;
-    }
-    
-    .audio-bar:nth-child(odd) {
-      background: linear-gradient(to top, #818cf8, #6366f1);
-    }
-    
-    .audio-bar:nth-child(even) {
-      background: linear-gradient(to top, #4f46e5, #4338ca);
-    }
-    
-    .audio-bar.active {
-      animation: pulse 0.2s ease-out;
-    }
-    
-    @keyframes pulse {
-      0% { transform: scaleY(1); }
-      50% { transform: scaleY(1.2); }
-      100% { transform: scaleY(1); }
+      width: 22px;
+      height: 22px;
+      filter: drop-shadow(0 0 3px rgba(0, 0, 0, 0.5));
     }
     
     /* Touch target optimization */
@@ -270,23 +337,29 @@
     }
     
     @media (max-width: 480px) {
+      .solar-system {
+        height: 400px;
+        width: 400px;
+      }
+      
+      .sun-core {
+        width: 180px;
+        height: 180px;
+      }
+      
       .password {
-        padding: 16px 50px;
-        font-size: 1.1rem;
+        font-size: 0.95rem;
+        padding: 12px 8px;
       }
       
       .play-pause-btn {
-        width: 54px;
-        height: 54px;
+        width: 45px;
+        height: 45px;
       }
       
       .volume-slider::-webkit-slider-thumb {
-        width: 18px;
-        height: 18px;
-      }
-      
-      .audio-visualization {
-        height: 80px;
+        width: 14px;
+        height: 14px;
       }
     }
     
@@ -311,52 +384,66 @@
   <canvas id="starfield"></canvas>
 
   <div class="container">
-    <div class="password-section">
-      <h1 class="subtitle" style="color: #94a3b8; margin-bottom: 10px; font-weight: 400;">Current Access Password</h1>
+    <div class="solar-system">
+      <!-- Sun glow effect -->
+      <div class="sun-glow"></div>
       
-      <div class="password-container">
-        <input type="text" id="password" class="password" readonly value="Loading...">
-        <button class="copy-btn" id="copyBtn">
-          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
-            <path d="M4 1.5H3a2 2 0 0 0-2 2V14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V3.5a2 2 0 0 0-2-2h-1v1h1a1 1 0 0 1 1 1V14a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V3.5a1 1 0 0 1 1-1h1v-1z"/>
-            <path d="M9.5 1a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5h-3a.5.5 0 0 1-.5-.5v-1a.5.5 0 0 1 .5-.5h3zm-3-1A1.5 1.5 0 0 0 5 1.5v1A1.5 1.5 0 0 0 6.5 4h3A1.5 1.5 0 0 0 11 2.5v-1A1.5 1.5 0 0 0 9.5 0h-3z"/>
-          </svg>
-        </button>
+      <!-- Solar flares visualization -->
+      <div class="solar-flares" id="solarFlares"></div>
+      
+      <!-- Sun core with password -->
+      <div class="sun-core">
+        <div class="password-container">
+          <input type="text" id="password" class="password" readonly value="Loading...">
+          <button class="copy-btn" id="copyBtn">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+              <path d="M4 1.5H3a2 2 0 0 0-2 2V14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V3.5a2 2 0 0 0-2-2h-1v1h1a1 1 0 0 1 1 1V14a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V3.5a1 1 0 0 1 1-1h1v-1z"/>
+              <path d="M9.5 1a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5h-3a.5.5 0 0 1-.5-.5v-1a.5.5 0 0 1 .5-.5h3zm-3-1A1.5 1.5 0 0 0 5 1.5v1A1.5 1.5 0 0 0 6.5 4h3A1.5 1.5 0 0 0 11 2.5v-1A1.5 1.5 0 0 0 9.5 0h-3z"/>
+            </svg>
+          </button>
+        </div>
+        <div class="last-updated" id="lastUpdated">Last updated: Checking...</div>
       </div>
-      
-      <div class="last-updated" id="lastUpdated">Last updated: Checking...</div>
     </div>
     
-    <div class="audio-section">
-      <div class="audio-player">
-        <button class="play-pause-btn" id="playPauseBtn">
-          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 16 16">
-            <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 0A8 8 0 1 0 8 0a8 8 0 0 0 0 16z"/>
-            <path d="M6.271 5.055a.5.5 0 0 1 .52.038l3.5 2.5a.5.5 0 0 1 0 .814l-3.5 2.5A.5.5 0 0 1 6 10.5v-5a.5.5 0 0 1 .271-.445z"/>
-          </svg>
-        </button>
-        
-        <div class="volume-control">
-          <div class="volume-icon" id="volumeIcon">🔈</div>
-          <input type="range" min="0" max="100" value="70" class="volume-slider" id="volumeSlider">
-        </div>
-      </div>
+    <div class="audio-controls">
+      <button class="play-pause-btn" id="playPauseBtn">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 16 16">
+          <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 0A8 8 0 1 0 8 0a8 8 0 0 0 0 16z"/>
+          <path d="M6.271 5.055a.5.5 0 0 1 .52.038l3.5 2.5a.5.5 0 0 1 0 .814l-3.5 2.5A.5.5 0 0 1 6 10.5v-5a.5.5 0 0 1 .271-.445z"/>
+        </svg>
+      </button>
       
-      <div class="audio-visualization" id="audioVisualization"></div>
+      <div class="volume-control">
+        <div class="volume-icon" id="volumeIcon">🔈</div>
+        <input type="range" min="0" max="100" value="70" class="volume-slider" id="volumeSlider">
+      </div>
     </div>
   </div>
 
   <script>
-    // Create audio visualization bars
+    // Create solar flares around the sun
     document.addEventListener('DOMContentLoaded', () => {
-      const visualization = document.getElementById('audioVisualization');
-      const barCount = Math.min(32, Math.floor(window.innerWidth / 10));
+      const flaresContainer = document.getElementById('solarFlares');
+      const flareCount = 48; // Number of flares around the sun
       
-      for (let i = 0; i < barCount; i++) {
-        const bar = document.createElement('div');
-        bar.className = 'audio-bar';
-        bar.style.height = '2px';
-        visualization.appendChild(bar);
+      for (let i = 0; i < flareCount; i++) {
+        const flare = document.createElement('div');
+        flare.className = 'flare';
+        
+        // Position flare around the circle
+        const angle = (i / flareCount) * 360;
+        flare.style.transform = `rotate(${angle}deg)`;
+        
+        // Randomize flare properties
+        const length = 40 + Math.random() * 60;
+        flare.style.height = `${length}px`;
+        flare.style.width = `${2 + Math.random() * 4}px`;
+        
+        // Add random delay for animation
+        flare.style.animationDelay = `${Math.random() * 2}s`;
+        
+        flaresContainer.appendChild(flare);
       }
     });
 
@@ -376,16 +463,16 @@
       
       // Create stars with different properties
       const stars = [];
-      const starCount = Math.min(200, window.innerWidth * 0.4);
+      const starCount = Math.min(150, window.innerWidth * 0.2);
       
       for (let i = 0; i < starCount; i++) {
         stars.push({
           x: Math.random() * canvas.width,
           y: Math.random() * canvas.height,
-          size: Math.random() * 1.5 + 0.3,
-          speed: Math.random() * 0.3 + 0.05,
-          brightness: Math.random() * 0.5 + 0.3,
-          twinkleSpeed: Math.random() * 0.02 + 0.005,
+          size: Math.random() * 1.2 + 0.2,
+          speed: Math.random() * 0.1 + 0.02,
+          brightness: Math.random() * 0.4 + 0.2,
+          twinkleSpeed: Math.random() * 0.01 + 0.003,
           twinklePhase: Math.random() * Math.PI * 2
         });
       }
@@ -396,15 +483,15 @@
       
       function createShootingStar() {
         const now = Date.now();
-        if (now - lastShootingStarTime > (Math.random() * 8000 + 5000)) {
+        if (now - lastShootingStarTime > (Math.random() * 10000 + 8000)) {
           shootingStars.push({
             x: Math.random() * canvas.width,
             y: 0,
-            length: Math.random() * 100 + 50,
-            speed: Math.random() * 10 + 5,
-            angle: Math.random() * Math.PI / 6 + Math.PI / 6,
+            length: Math.random() * 120 + 60,
+            speed: Math.random() * 12 + 6,
+            angle: Math.random() * Math.PI / 8 + Math.PI / 8,
             life: 1.0,
-            decay: Math.random() * 0.02 + 0.01
+            decay: Math.random() * 0.03 + 0.015
           });
           lastShootingStarTime = now;
         }
@@ -412,7 +499,7 @@
       
       function animate() {
         // Clear with a dark background
-        ctx.fillStyle = '#0a0f24';
+        ctx.fillStyle = '#000000';
         ctx.fillRect(0, 0, canvas.width, canvas.height);
         
         // Draw and update regular stars
@@ -449,7 +536,7 @@
             s.y - Math.sin(s.angle) * s.length
           );
           ctx.strokeStyle = `rgba(255, 255, 255, ${s.life})`;
-          ctx.lineWidth = 1.5;
+          ctx.lineWidth = 1.8;
           ctx.stroke();
           
           // Update position
@@ -467,47 +554,14 @@
       }
       
       animate();
-      
-      // Touch interaction for mobile
-      let touchX = -100;
-      let touchY = -100;
-      
-      document.addEventListener('touchmove', (e) => {
-        if (e.touches.length > 0) {
-          touchX = e.touches[0].clientX;
-          touchY = e.touches[0].clientY;
-        }
-      });
-      
-      document.addEventListener('touchend', () => {
-        touchX = -100;
-        touchY = -100;
-      });
-      
-      // Add subtle star attraction effect
-      setInterval(() => {
-        if (touchX > 0 && touchY > 0) {
-          stars.forEach(star => {
-            const dx = touchX - star.x;
-            const dy = touchY - star.y;
-            const distance = Math.sqrt(dx * dx + dy * dy);
-            
-            if (distance < 150) {
-              star.x -= dx * 0.008;
-              star.y -= dy * 0.008;
-            }
-          });
-        }
-      }, 50);
     }
     
-    // Enhanced audio player with real visualization
+    // Enhanced audio player with solar flare visualization
     function setupAudioPlayer() {
       const playPauseBtn = document.getElementById('playPauseBtn');
       const volumeSlider = document.getElementById('volumeSlider');
       const volumeIcon = document.getElementById('volumeIcon');
-      const audioVisualization = document.getElementById('audioVisualization');
-      const audioBars = document.querySelectorAll('.audio-bar');
+      const solarFlares = document.querySelectorAll('.flare');
       
       let isPlaying = false;
       let audioContext;
@@ -528,7 +582,7 @@
         // Setup Web Audio API for visualization
         audioContext = new (window.AudioContext || window.webkitAudioContext)();
         analyser = audioContext.createAnalyser();
-        analyser.fftSize = 256;
+        analyser.fftSize = 512;
         const bufferLength = analyser.frequencyBinCount;
         visualizationData = new Uint8Array(bufferLength);
         
@@ -570,46 +624,66 @@
           animationFrameId = null;
         }
         
-        // Reset bars to minimum height
-        audioBars.forEach(bar => {
-          bar.style.height = '2px';
+        // Reset flares to minimum height
+        solarFlares.forEach(f => {
+          f.style.height = `${40 + Math.random() * 20}px`;
         });
       }
       
-      // Visualization function
+      // Visualization function - solar flare effect
       function visualize() {
         animationFrameId = requestAnimationFrame(visualize);
         
         analyser.getByteFrequencyData(visualizationData);
         
-        // Calculate how many frequency bins to map to each bar
-        const step = Math.floor(visualizationData.length / audioBars.length);
+        // Calculate average volume
+        let sum = 0;
+        for (let i = 0; i < visualizationData.length; i++) {
+          sum += visualizationData[i];
+        }
+        const average = sum / visualizationData.length;
         
-        for (let i = 0; i < audioBars.length; i++) {
-          // Average multiple frequency bins for each bar
-          let sum = 0;
-          for (let j = 0; j < step; j++) {
-            const index = i * step + j;
-            if (index < visualizationData.length) {
-              sum += visualizationData[index];
-            }
-          }
+        // Update each flare based on audio frequency data
+        for (let i = 0; i < solarFlares.length; i++) {
+          // Map flare index to frequency range
+          const frequencyIndex = Math.floor(i * visualizationData.length / solarFlares.length);
+          const frequencyValue = visualizationData[frequencyIndex];
           
-          const avg = sum / step;
-          // Scale the height (0-255 to 2-100px)
-          const height = Math.max(2, avg * 0.35);
+          // Calculate flare height (minimum 40px to maintain shape)
+          const minHeight = 40;
+          const maxHeight = 100;
+          const height = minHeight + (frequencyValue / 255) * (maxHeight - minHeight);
           
-          // Add subtle animation
-          audioBars[i].style.height = `${height}px`;
+          // Apply height with smooth transition
+          solarFlares[i].style.height = `${height}px`;
           
           // Add pulse effect for significant changes
-          if (height > 60) {
-            audioBars[i].classList.add('active');
+          if (height > 80) {
+            solarFlares[i].classList.add('active');
             setTimeout(() => {
-              audioBars[i].classList.remove('active');
-            }, 200);
+              solarFlares[i].classList.remove('active');
+            }, 150);
+          }
+          
+          // Randomly adjust width for organic feel
+          if (Math.random() < 0.1) {
+            const width = 2 + Math.random() * 4;
+            solarFlares[i].style.width = `${width}px`;
           }
         }
+        
+        // Update sun core glow based on overall volume
+        const glowIntensity = average / 255;
+        const coreElement = document.querySelector('.sun-core');
+        coreElement.style.boxShadow = `
+          0 0 ${30 + glowIntensity * 10}px ${10 + glowIntensity * 5}px rgba(255, 204, 0, ${0.3 + glowIntensity * 0.1}),
+          0 0 ${60 + glowIntensity * 20}px ${20 + glowIntensity * 10}px rgba(255, 153, 0, ${0.2 + glowIntensity * 0.1}),
+          0 0 ${90 + glowIntensity * 30}px ${30 + glowIntensity * 15}px rgba(255, 102, 0, ${0.1 + glowIntensity * 0.05})
+        `;
+        
+        // Update sun size based on volume
+        const scale = 1 + glowIntensity * 0.05;
+        coreElement.style.transform = `scale(${scale})`;
       }
       
       // Update play/pause button icon
