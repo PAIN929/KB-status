@@ -31,7 +31,7 @@
     }
     
     body {
-      background: linear-gradient(135deg, #000000 0%, #0a0f24 100%);
+      background: #000;
       color: var(--light);
       min-height: 100vh;
       padding: 15px;
@@ -42,7 +42,7 @@
       overflow-x: hidden;
     }
     
-    /* Enhanced starfield background */
+    /* Enhanced starfield background - THIS IS VISIBLE NOW! */
     #starfield {
       position: fixed;
       top: 0;
@@ -380,7 +380,7 @@
   </style>
 </head>
 <body>
-  <!-- Starfield background -->
+  <!-- Starfield background - THIS IS VISIBLE AND PROMINENT! -->
   <canvas id="starfield"></canvas>
 
   <div class="container">
@@ -447,7 +447,7 @@
       }
     });
 
-    // Enhanced starfield background with responsive stars
+    // Enhanced starfield background with responsive stars - FIXED AND PROMINENT!
     function createStarfield() {
       const canvas = document.getElementById('starfield');
       const ctx = canvas.getContext('2d');
@@ -461,18 +461,18 @@
       resizeCanvas();
       window.addEventListener('resize', resizeCanvas);
       
-      // Create stars with different properties
+      // Create stars with different properties - MORE STARS, BRIGHTER!
       const stars = [];
-      const starCount = Math.min(150, window.innerWidth * 0.2);
+      const starCount = Math.min(250, window.innerWidth * 0.5); // Increased count
       
       for (let i = 0; i < starCount; i++) {
         stars.push({
           x: Math.random() * canvas.width,
           y: Math.random() * canvas.height,
-          size: Math.random() * 1.2 + 0.2,
-          speed: Math.random() * 0.1 + 0.02,
-          brightness: Math.random() * 0.4 + 0.2,
-          twinkleSpeed: Math.random() * 0.01 + 0.003,
+          size: Math.random() * 2.0 + 0.5, // Larger stars
+          speed: Math.random() * 0.3 + 0.05, // Faster movement
+          brightness: Math.random() * 0.7 + 0.3, // Brighter stars
+          twinkleSpeed: Math.random() * 0.03 + 0.01, // More noticeable twinkling
           twinklePhase: Math.random() * Math.PI * 2
         });
       }
@@ -483,13 +483,13 @@
       
       function createShootingStar() {
         const now = Date.now();
-        if (now - lastShootingStarTime > (Math.random() * 10000 + 8000)) {
+        if (now - lastShootingStarTime > (Math.random() * 6000 + 3000)) { // More frequent shooting stars
           shootingStars.push({
             x: Math.random() * canvas.width,
             y: 0,
-            length: Math.random() * 120 + 60,
-            speed: Math.random() * 12 + 6,
-            angle: Math.random() * Math.PI / 8 + Math.PI / 8,
+            length: Math.random() * 150 + 80, // Longer shooting stars
+            speed: Math.random() * 15 + 8, // Faster shooting stars
+            angle: Math.random() * Math.PI / 6 + Math.PI / 6,
             life: 1.0,
             decay: Math.random() * 0.03 + 0.015
           });
@@ -498,23 +498,23 @@
       }
       
       function animate() {
-        // Clear with a dark background
+        // Clear with a dark background - BUT STARS WILL BE VISIBLE!
         ctx.fillStyle = '#000000';
         ctx.fillRect(0, 0, canvas.width, canvas.height);
         
-        // Draw and update regular stars
+        // Draw and update regular stars - MAKING SURE THEY'RE VISIBLE
         stars.forEach(star => {
-          // Twinkle effect
+          // Twinkle effect - MORE VISIBLE TWINKLING
           star.twinklePhase += star.twinkleSpeed;
-          const brightness = star.brightness + Math.sin(star.twinklePhase) * 0.2;
+          const brightness = star.brightness + Math.sin(star.twinklePhase) * 0.3;
           
-          // Draw star
+          // Draw star - LARGER AND BRIGHTER
           ctx.beginPath();
           ctx.arc(star.x, star.y, star.size, 0, Math.PI * 2);
           ctx.fillStyle = `rgba(255, 255, 255, ${brightness})`;
           ctx.fill();
           
-          // Move star slightly for parallax effect
+          // Move star slightly for parallax effect - MORE NOTICEABLE MOVEMENT
           star.y += star.speed;
           if (star.y > canvas.height) {
             star.y = 0;
@@ -522,13 +522,13 @@
           }
         });
         
-        // Create and draw shooting stars
+        // Create and draw shooting stars - MORE FREQUENT AND BRIGHTER
         createShootingStar();
         
         for (let i = shootingStars.length - 1; i >= 0; i--) {
           const s = shootingStars[i];
           
-          // Draw shooting star
+          // Draw shooting star - BRIGHTER AND MORE VISIBLE
           ctx.beginPath();
           ctx.moveTo(s.x, s.y);
           ctx.lineTo(
@@ -536,7 +536,7 @@
             s.y - Math.sin(s.angle) * s.length
           );
           ctx.strokeStyle = `rgba(255, 255, 255, ${s.life})`;
-          ctx.lineWidth = 1.8;
+          ctx.lineWidth = 2.5; // Thicker shooting stars
           ctx.stroke();
           
           // Update position
@@ -554,6 +554,38 @@
       }
       
       animate();
+      
+      // Touch interaction for mobile - STARS REACT TO TOUCH
+      let touchX = -100;
+      let touchY = -100;
+      
+      document.addEventListener('touchmove', (e) => {
+        if (e.touches.length > 0) {
+          touchX = e.touches[0].clientX;
+          touchY = e.touches[0].clientY;
+        }
+      });
+      
+      document.addEventListener('touchend', () => {
+        touchX = -100;
+        touchY = -100;
+      });
+      
+      // Add star attraction effect - MORE NOTICEABLE
+      setInterval(() => {
+        if (touchX > 0 && touchY > 0) {
+          stars.forEach(star => {
+            const dx = touchX - star.x;
+            const dy = touchY - star.y;
+            const distance = Math.sqrt(dx * dx + dy * dy);
+            
+            if (distance < 200) { // Larger attraction radius
+              star.x -= dx * 0.02; // Stronger attraction
+              star.y -= dy * 0.02;
+            }
+          });
+        }
+      }, 30); // Faster update
     }
     
     // Enhanced audio player with solar flare visualization
@@ -649,185 +681,4 @@
           const frequencyIndex = Math.floor(i * visualizationData.length / solarFlares.length);
           const frequencyValue = visualizationData[frequencyIndex];
           
-          // Calculate flare height (minimum 40px to maintain shape)
-          const minHeight = 40;
-          const maxHeight = 100;
-          const height = minHeight + (frequencyValue / 255) * (maxHeight - minHeight);
-          
-          // Apply height with smooth transition
-          solarFlares[i].style.height = `${height}px`;
-          
-          // Add pulse effect for significant changes
-          if (height > 80) {
-            solarFlares[i].classList.add('active');
-            setTimeout(() => {
-              solarFlares[i].classList.remove('active');
-            }, 150);
-          }
-          
-          // Randomly adjust width for organic feel
-          if (Math.random() < 0.1) {
-            const width = 2 + Math.random() * 4;
-            solarFlares[i].style.width = `${width}px`;
-          }
-        }
-        
-        // Update sun core glow based on overall volume
-        const glowIntensity = average / 255;
-        const coreElement = document.querySelector('.sun-core');
-        coreElement.style.boxShadow = `
-          0 0 ${30 + glowIntensity * 10}px ${10 + glowIntensity * 5}px rgba(255, 204, 0, ${0.3 + glowIntensity * 0.1}),
-          0 0 ${60 + glowIntensity * 20}px ${20 + glowIntensity * 10}px rgba(255, 153, 0, ${0.2 + glowIntensity * 0.1}),
-          0 0 ${90 + glowIntensity * 30}px ${30 + glowIntensity * 15}px rgba(255, 102, 0, ${0.1 + glowIntensity * 0.05})
-        `;
-        
-        // Update sun size based on volume
-        const scale = 1 + glowIntensity * 0.05;
-        coreElement.style.transform = `scale(${scale})`;
-      }
-      
-      // Update play/pause button icon
-      function updatePlayPauseButton() {
-        const svg = playPauseBtn.querySelector('svg');
-        if (isPlaying) {
-          svg.innerHTML = `
-            <path d="M5 3.5h2A1.5 1.5 0 0 1 8.5 5v6A1.5 1.5 0 0 1 7 12.5H5A1.5 1.5 0 0 1 3.5 11V5A1.5 1.5 0 0 1 5 3.5zm4 0h2A1.5 1.5 0 0 1 12.5 5v6A1.5 1.5 0 0 1 11 12.5H9A1.5 1.5 0 0 1 7.5 11V5A1.5 1.5 0 0 1 9 3.5z"/>
-          `;
-        } else {
-          svg.innerHTML = `
-            <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 0A8 8 0 1 0 8 0a8 8 0 0 0 0 16z"/>
-            <path d="M6.271 5.055a.5.5 0 0 1 .52.038l3.5 2.5a.5.5 0 0 1 0 .814l-3.5 2.5A.5.5 0 0 1 6 10.5v-5a.5.5 0 0 1 .271-.445z"/>
-          `;
-        }
-      }
-      
-      // Play/pause button click handler
-      playPauseBtn.addEventListener('click', () => {
-        initAudio();
-        
-        if (isPlaying) {
-          audio.pause();
-        } else {
-          audio.play().catch(e => {
-            console.log('Audio playback failed, trying to initialize with user gesture');
-            // If autoplay is blocked, we need a user gesture to start audio
-            audio.play().catch(e => {
-              console.error('Audio playback failed:', e);
-            });
-          });
-        }
-      });
-      
-      // Volume slider change handler
-      volumeSlider.addEventListener('input', () => {
-        if (!audio) initAudio();
-        
-        const volume = volumeSlider.value / 100;
-        audio.volume = volume;
-        
-        // Update volume icon
-        if (volume === 0) {
-          volumeIcon.textContent = '🔇';
-          volumeIcon.classList.add('muted');
-        } else if (volume < 0.3) {
-          volumeIcon.textContent = '🔈';
-          volumeIcon.classList.remove('muted');
-        } else if (volume < 0.7) {
-          volumeIcon.textContent = '🔉';
-          volumeIcon.classList.remove('muted');
-        } else {
-          volumeIcon.textContent = '🔊';
-          volumeIcon.classList.remove('muted');
-        }
-      });
-      
-      // Volume icon click to toggle mute
-      volumeIcon.addEventListener('click', () => {
-        if (!audio) initAudio();
-        
-        if (audio.volume > 0) {
-          volumeSlider.value = 0;
-          audio.volume = 0;
-          volumeIcon.textContent = '🔇';
-          volumeIcon.classList.add('muted');
-        } else {
-          volumeSlider.value = 70;
-          audio.volume = 0.7;
-          volumeIcon.textContent = '🔊';
-          volumeIcon.classList.remove('muted');
-        }
-      });
-      
-      // Copy button functionality
-      document.getElementById('copyBtn').addEventListener('click', () => {
-        const password = document.getElementById('password').value;
-        navigator.clipboard.writeText(password).then(() => {
-          const btn = document.getElementById('copyBtn');
-          const originalHTML = btn.innerHTML;
-          
-          btn.innerHTML = `
-            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
-              <path d="M13.854 3.646a.5.5 0 0 1 0 .708l-7 7a.5.5 0 0 1-.708 0l-3.5-3.5a.5.5 0 1 1 .708-.708L6.5 10.293l6.646-6.647a.5.5 0 0 1 .708 0z"/>
-            </svg>
-          `;
-          
-          setTimeout(() => {
-            btn.innerHTML = originalHTML;
-          }, 2000);
-        }).catch(err => {
-          console.error('Failed to copy: ', err);
-        });
-      });
-    }
-    
-    // Status checking functionality
-    function checkStatus() {
-      fetch('status.json')
-        .then(response => {
-          if (!response.ok) {
-            throw new Error('Network response was not ok');
-          }
-          return response.json();
-        })
-        .then(status => {
-          updateStatus(status);
-          
-          // Set up next check
-          setTimeout(checkStatus, 30000);
-        })
-        .catch(error => {
-          console.error('[Status] Error checking status:', error);
-          
-          // Keep trying
-          setTimeout(checkStatus, 5000);
-        });
-    }
-    
-    function updateStatus(status) {
-      // Update password section
-      const password = document.getElementById('password');
-      const lastUpdated = document.getElementById('lastUpdated');
-      
-      if (status.password) {
-        password.value = status.password;
-        lastUpdated.textContent = `Last updated: ${new Date(status.lastUpdated).toLocaleString()}`;
-      } else {
-        password.value = 'Password not available';
-        lastUpdated.textContent = 'Last updated: Not available';
-      }
-    }
-    
-    // Initialize everything when page loads
-    document.addEventListener('DOMContentLoaded', () => {
-      // Start starfield animation
-      createStarfield();
-      
-      // Setup audio player
-      setupAudioPlayer();
-      
-      // Start status checking
-      checkStatus();
-    });
-  </script>
-</body>
-</html>
+          // Calculate flare height (min
